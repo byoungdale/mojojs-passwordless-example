@@ -2,6 +2,8 @@
 
 This is an small example of doing passwordless login with [mojo.js](https://github.com/mojolicious/mojo.js).
 
+![example-gif](./example.gif)
+
 # Run example
 
 You need a postgresql database and email server to run the example. See below for how to easily get those running with docker.
