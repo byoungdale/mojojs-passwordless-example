@@ -1,0 +1,10 @@
+node_modules
+config.yml
+
+package-lock.json
+*.log
+*.gz
+
+# compiled/transpiled javascripts
+lib/
+*.tsbuildinfo

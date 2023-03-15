@@ -1,0 +1,8 @@
+{
+  "domain": "http://localhost:3000",
+  "pg": "postgresql://postgres:postgres@127.0.0.1:5432/mojojs_passwordless_example_dev",
+  "secrets": "482bf9c05d37a65e5d9fe2107fbae572",
+  "SMTP_SERVER_HOST": "localhost",
+  "SMTP_SERVER_PORT": 1025,
+  "FROM_EMAIL_ADDRESS": "support@mojojs-passwordless-example"
+}

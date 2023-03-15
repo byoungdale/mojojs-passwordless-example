@@ -1,0 +1,10 @@
+% view.layout = 'default';
+<h2><%= msg %></h2>
+<ul>
+% for (const err in form.errors) {
+    <li>
+        <p style="color:red"> <%= err %> </p>
+    </li>
+% }
+</ul>
+%= await ctx.include({view: 'users/_form'}, {caption: 'Update settings', target: ['update_user', {values: { id: user.id }}]})

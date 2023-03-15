@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    %= await ctx.faviconTag()
+    <title>Welcome</title>
+  </head>
+  <nav>
+    <a href="/">home</a>
+    <% if (current_user) { =%>
+      <a href="<%= ctx.urlFor('edit_user', {values: { id: current_user.id }}) %>">account</a>
+      <a href="<%= ctx.urlFor('logout', { values: { id: current_user.id }}) %>">logout</a>
+    <% } else { =%>
+      <a href="<%= ctx.urlFor('show_signup') %>">signup</a>
+      <a href="<%= ctx.urlFor('show_login') %>">login</a>
+    <% } =%>
+  </nav>
+  <body><%= ctx.content.main %></body>
+</html>

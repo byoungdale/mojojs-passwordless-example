@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "lib": [
+      "ESNext",
+      "DOM"
+    ],
+    "target": "ES2020",
+    "module": "ES2020",
+    "sourceMap": true,
+    "declaration": true,
+    "incremental": true,
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "noErrorTruncation": true,
+    "strict": true,
+    "outDir": "lib",
+    "rootDir": "src",
+    "composite": true,
+    "noUnusedLocals": true,
+    "forceConsistentCasingInFileNames": true,
+    "noImplicitReturns": true,
+  },
+  "include": [
+    "src/**/*"
+, "bg-worker.js", "migrate.js"  ]
+}

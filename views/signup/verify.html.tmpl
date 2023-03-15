@@ -1,0 +1,14 @@
+<{formBlock}>
+  <label for="username">Username</label>
+  <br>
+  %= await ctx.textFieldTag('username',{value: verify.username});
+  <br>
+  %= await ctx.submitButtonTag('Submit')
+<{/formBlock}>
+
+% view.layout = 'default';
+<h2><%= msg %></h2>
+% if (verify.err) {
+    <p style="color:red"> <%= verify.err %> </p>
+% }
+%= await ctx.formFor('confirm_username', {class: 'verify-form'}, await formBlock())

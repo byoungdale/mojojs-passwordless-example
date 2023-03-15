@@ -1,0 +1,12 @@
+<{formBlock}>
+  <br>
+  <label>Username:</label>
+  %= await ctx.inputTag('username',{value: user.username});
+  <br>
+  <label>Email:</label>
+  %= await ctx.emailFieldTag('email', {value: user.email});
+  <br>
+  %= await ctx.hiddenFieldTag('id', `${user.id}`)
+  %= await ctx.submitButtonTag(caption)
+<{/formBlock}>
+%= await ctx.formFor(target, {class: 'user-form'}, await formBlock())

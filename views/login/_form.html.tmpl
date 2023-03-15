@@ -1,0 +1,8 @@
+<{formBlock}>
+  <label for="email">Email</label>
+  <br>
+  %= await ctx.emailFieldTag('email',{value: login.email});
+  <br>
+  %= await ctx.submitButtonTag(caption)
+<{/formBlock}>
+%= await ctx.formFor(target, {class: 'login-form'}, await formBlock())

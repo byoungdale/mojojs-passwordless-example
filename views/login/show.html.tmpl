@@ -1,0 +1,6 @@
+% view.layout = 'default';
+<h2><%= msg %></h2>
+% if (login.err) {
+    <p style="color:red"> <%= login.err %> </p>
+% }
+%= await ctx.include({view: 'login/_form'}, {caption: 'Login with Email', target: ['create_login']})
