@@ -1,12 +1,9 @@
 import type { MojoContext } from "@mojojs/core";
 import { User, Users } from "../models/users.js";
-import Minion from "@minionjs/core";
-import { _validate_email } from "../helpers/validators.js";
 
 export default class Controller {
   async show(ctx: MojoContext): Promise<void> {
     const session = await ctx.session();
-    console.log(session);
     if (session.current_user) ctx.redirectTo("/");
     ctx.stash.msg = "One website to rule them all";
     ctx.stash.signup = {};
@@ -16,7 +13,7 @@ export default class Controller {
   async create(ctx: MojoContext): Promise<void> {
     const email = (await ctx.params()).toObject().email;
 
-    if (_validate_email(ctx, email) === false) {
+    if (ctx.validateEmail(ctx, email) === false) {
       await ctx.render(
         { view: "signup/show" },
         {
@@ -35,18 +32,12 @@ export default class Controller {
         ctx.config.domain
       );
 
-      const minion = new Minion(ctx.config.pg);
-
-      // probably better to move this to a DB job insert
-      // send it out in a queue with minion.js
-      await minion.enqueue("email", [
-        {
-          to: email,
-          subject: "Welcome to mojojs-passwordless-example!",
-          text: "Welcome to mojojs-passwordless-example! Please confirm your address",
-          html: `<h1>Welcome to mojojs-passwordless-example!</h1><p>Please confirm your address with the follow link</p><a href='${confirmationUrl}'>${confirmationUrl}</a>`,
-        },
-      ]);
+      ctx.emailTask({
+        to: email,
+        subject: "Welcome to mojojs-passwordless-example!",
+        text: "Welcome to mojojs-passwordless-example! Please confirm your address",
+        html: `<h1>Welcome to mojojs-passwordless-example!</h1><p>Please confirm your address with the follow link</p><a href='${confirmationUrl}'>${confirmationUrl}</a>`,
+      });
     } catch (err: any) {
       // this is lame
       // maybe just need to add a helper to avoid this weirdness

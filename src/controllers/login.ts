@@ -1,7 +1,6 @@
 import type { MojoContext } from "@mojojs/core";
 import Minion from "@minionjs/core";
 import { User, Users } from "../models/users.js";
-import { _validate_email } from "../helpers/validators.js";
 
 export default class Controller {
   async show(ctx: MojoContext): Promise<void> {
@@ -16,7 +15,7 @@ export default class Controller {
   async create(ctx: MojoContext): Promise<void> {
     const email = (await ctx.params()).toObject().email;
 
-    if (_validate_email(ctx, email) === false) {
+    if (ctx.validateEmail(ctx, email) === false) {
       await ctx.render(
         { view: "login/show" },
         {

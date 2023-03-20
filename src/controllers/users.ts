@@ -1,6 +1,5 @@
 import type { MojoContext } from "@mojojs/core";
 import { User, Users } from "../models/users.js";
-import { _validate_email, _validate_username } from "../helpers/validators.js";
 
 export default class Controller {
   async show(ctx: MojoContext): Promise<void> {
@@ -41,7 +40,7 @@ export default class Controller {
       {
         msg: "Account settings",
         form: {
-          error: [],
+          errors: [],
         },
         user: session.current_user,
         current_user: session.current_user,
@@ -55,7 +54,7 @@ export default class Controller {
     const formUser: User = (await ctx.params()).toObject();
     const updatedUser: any = {};
 
-    const formErrors: string[] = _validate(ctx, formUser);
+    const formErrors: string[] = await _validate(ctx, formUser);
     if (formErrors.length > 0) {
       await ctx.render(
         { view: "users/edit" },
@@ -117,16 +116,16 @@ export default class Controller {
   }
 }
 
-function _validate(ctx: MojoContext, formUser: User): string[] {
+async function _validate(ctx: MojoContext, formUser: User): Promise<string[]> {
   let errors = [];
 
-  if (_validate_email(ctx, formUser.email) == false) {
+  if ((await ctx.validateEmail(ctx, formUser.email)) === false) {
     errors.push("invalid email");
   }
 
-  if (_validate_username(ctx, formUser.username) == false) {
+  if ((await ctx.validateUsername(ctx, formUser.username)) === false) {
     errors.push("invalid username");
   }
 
-  return [];
+  return errors;
 }

@@ -1,6 +1,7 @@
 import { Users } from "./models/users.js";
 import mojo, { jsonConfigPlugin } from "@mojojs/core";
 import Pg from "@mojojs/pg";
+import { minionHelpers, validators } from "./plugins/plugins.js";
 
 export const app = mojo({
   // Default configuration
@@ -23,7 +24,11 @@ export const app = mojo({
   mode: process.env.NODE_ENV, // development or production
 });
 
+// load plugins
 app.plugin(jsonConfigPlugin);
+app.plugin(minionHelpers);
+app.plugin(validators);
+
 app.secrets = app.config.secrets;
 app.defaults.current_user = undefined; // no user login by default
 
@@ -38,6 +43,7 @@ app.addAppHook("app:start", async (app) => {
   await migrations.migrate();
 });
 
+// main ui
 app.get("/").to("index#welcome").name("main");
 
 // signup
@@ -55,6 +61,6 @@ app.get("/logout").to("login#delete").name("logout");
 app.get("/users/check_email").to("users#check_email").name("check_email");
 app.get("/users/:id").to("users#show").name("show_user");
 app.get("/users/:id/edit").to("users#edit").name("edit_user");
-app.post("/users/:id").to("users#update").name("update_user");
+app.post("/users/:id/edit").to("users#update").name("update_user");
 
 app.start();

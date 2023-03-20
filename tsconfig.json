@@ -21,6 +21,5 @@
     "noImplicitReturns": true,
   },
   "include": [
-    "src/**/*"
-, "bg-worker.js", "migrate.js"  ]
+    "src/**/*" ]
 }
