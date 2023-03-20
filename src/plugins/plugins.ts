@@ -3,10 +3,36 @@ import Minion from "@minionjs/core";
 
 export function minionHelpers(app: MojoApp) {
   app.addHelper("emailTask", async (ctx: MojoContext, ...args) => {
-    console.log("emailTask");
-    console.log(args);
     const minion = new Minion(ctx.config.pg);
     await minion.enqueue("email", args);
+  });
+}
+
+export function errorHelpers(app: MojoApp) {
+  type ErrorWithMessage = {
+    message: string;
+  };
+  function isErrorWithMessage(error: unknown): error is ErrorWithMessage {
+    return (
+      typeof error === "object" &&
+      error !== null &&
+      "message" in error &&
+      typeof (error as Record<string, unknown>).message === "string"
+    );
+  }
+  function toErrorWithMessage(maybeError: unknown): ErrorWithMessage {
+    if (isErrorWithMessage(maybeError)) return maybeError;
+
+    try {
+      return new Error(JSON.stringify(maybeError));
+    } catch {
+      // fallback in case there's an error stringifying the maybeError
+      // like with circular references for example.
+      return new Error(String(maybeError));
+    }
+  }
+  app.addHelper("getErrorMessage", async (ctx: MojoContext, ...args) => {
+    return toErrorWithMessage(args[0]);
   });
 }
 

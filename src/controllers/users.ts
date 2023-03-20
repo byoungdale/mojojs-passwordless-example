@@ -100,9 +100,35 @@ export default class Controller {
     }
 
     const users = new Users(ctx.models.pg);
-    const newUser: User = await users.update(currentUser.id, updatedUser);
 
-    session.current_user = newUser;
+    try {
+      const newUser: User = await users.update(currentUser.id, updatedUser);
+      session.current_user = newUser;
+    } catch (err) {
+      let errors = [];
+      const errorMsg: string = (await ctx.getErrorMessage(err)).message;
+      const dupUsername = /^.*duplicate.*username.*/g;
+      const dupEmail = /^.*duplicate.*email.*/g;
+
+      if (errorMsg.match(dupUsername)) {
+        errors.push("username already taken");
+      }
+      if (errorMsg.match(dupEmail)) {
+        errors.push("email already taken");
+      }
+
+      await ctx.render(
+        { view: "users/edit" },
+        {
+          msg: "Account settings",
+          form: {
+            errors,
+          },
+          user: session.current_user,
+          current_user: session.current_user,
+        }
+      );
+    }
 
     ctx.redirectTo("edit_user", {
       status: 302,

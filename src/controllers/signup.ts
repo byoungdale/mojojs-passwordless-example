@@ -32,12 +32,14 @@ export default class Controller {
         ctx.config.domain
       );
 
-      ctx.emailTask({
-        to: email,
-        subject: "Welcome to mojojs-passwordless-example!",
-        text: "Welcome to mojojs-passwordless-example! Please confirm your address",
-        html: `<h1>Welcome to mojojs-passwordless-example!</h1><p>Please confirm your address with the follow link</p><a href='${confirmationUrl}'>${confirmationUrl}</a>`,
-      });
+      ctx.models.minion.enqueue("email", [
+        {
+          to: email,
+          subject: "Welcome to mojojs-passwordless-example!",
+          text: "Welcome to mojojs-passwordless-example! Please confirm your address",
+          html: `<h1>Welcome to mojojs-passwordless-example!</h1><p>Please confirm your address with the follow link</p><a href='${confirmationUrl}'>${confirmationUrl}</a>`,
+        },
+      ]);
     } catch (err: any) {
       // this is lame
       // maybe just need to add a helper to avoid this weirdness

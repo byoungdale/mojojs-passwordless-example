@@ -1,5 +1,4 @@
 import type { MojoContext } from "@mojojs/core";
-import Minion from "@minionjs/core";
 import { User, Users } from "../models/users.js";
 
 export default class Controller {
@@ -33,11 +32,9 @@ export default class Controller {
       ctx.config.domain
     );
 
-    const minion = new Minion(ctx.config.pg);
-
     // probably better to move this to a DB job insert
     // send it out in a queue with minion.js
-    await minion.enqueue("email", [
+    await ctx.models.minion.enqueue("email", [
       {
         to: email,
         subject: "Welcome to mojojs-passwordless-example!",

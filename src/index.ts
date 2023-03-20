@@ -1,7 +1,9 @@
 import { Users } from "./models/users.js";
 import mojo, { jsonConfigPlugin } from "@mojojs/core";
 import Pg from "@mojojs/pg";
-import { minionHelpers, validators } from "./plugins/plugins.js";
+import { validators, errorHelpers } from "./plugins/plugins.js";
+import { emailTask } from "./tasks/email.js";
+import { minionPlugin, minionAdminPlugin } from "@minionjs/core";
 
 export const app = mojo({
   // Default configuration
@@ -26,22 +28,29 @@ export const app = mojo({
 
 // load plugins
 app.plugin(jsonConfigPlugin);
-app.plugin(minionHelpers);
+app.plugin(minionAdminPlugin);
 app.plugin(validators);
+app.plugin(errorHelpers);
 
 app.secrets = app.config.secrets;
 app.defaults.current_user = undefined; // no user login by default
 
-app.addAppHook("app:start", async (app) => {
+app.onStart(async (app) => {
   if (app.models.pg === undefined) app.models.pg = new Pg(app.config.pg);
-  app.models.posts = new Users(app.models.pg);
+  app.models.users = new Users(app.models.pg);
 
   const migrations = app.models.pg.migrations;
   await migrations.fromFile(app.home.child("migrations", "schema.sql"), {
     name: "mojojs_passwordless_example_dev",
   });
   await migrations.migrate();
+  app.plugin(minionPlugin, { config: app.models.pg });
+  app.plugin(emailTask);
 });
+
+// minion ui
+const minionPrefix = app.any("/minion");
+app.plugin(minionAdminPlugin, { route: minionPrefix });
 
 // main ui
 app.get("/").to("index#welcome").name("main");

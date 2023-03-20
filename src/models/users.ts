@@ -93,7 +93,6 @@ export class Users {
 
     const updateLength: number = Object.entries(updatedUser).length;
     Object.entries(updatedUser).forEach(([column, value], index) => {
-      console.log(`${column}=\'${value}\'`);
       const updateSection =
         updateLength > 1 && index + 1 < updateLength
           ? `${column}=\'${value}\', `
@@ -102,10 +101,14 @@ export class Users {
       updateQuerySetClause = `${updateQuerySetClause}${updateSection}`;
     });
 
-    return (
-      await this.pg.rawQuery(
-        `${updateQueryMainClause} ${updateQuerySetClause} WHERE id=${id} RETURNING *`
-      )
-    ).first;
+    try {
+      return (
+        await this.pg.rawQuery(
+          `${updateQueryMainClause} ${updateQuerySetClause} WHERE id=${id} RETURNING *`
+        )
+      ).first;
+    } catch (err) {
+      throw err;
+    }
   }
 }
