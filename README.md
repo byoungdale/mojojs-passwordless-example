@@ -26,26 +26,28 @@ You will be able to check emails at http://localhost:1080.
 docker run  -d -p 1080:1080 -p 1025:1025 maildev/maildev
 ```
 
-## 3. Run migration
-
-```sh
-node migrate.js
-```
-
-## 4. Start [minion.js]() background worker for handling signup & login email jobs
-
-```sh
-node bg-worker.js
-```
-
-## 5. Start dev server
-
-Leave the background worker running in a separate terminal window.
+## 3. install dependencies and build
 
 ```sh
 npm install
 npm run build
 ```
+
+## 4. Run migration
+
+```sh
+node lib/index.js migrate
+```
+
+## 5. Start [minion.js]() background worker for handling signup & login email jobs
+
+```sh
+node lib/index.js minion-worker --jobs 12
+```
+
+## 6. Start dev server
+
+Leave the background worker running in a separate terminal window.
 
 ```sh
 npm run dev
